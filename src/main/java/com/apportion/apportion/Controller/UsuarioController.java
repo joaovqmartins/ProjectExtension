@@ -1,56 +1,45 @@
 package com.apportion.apportion.Controller;
 
-import com.apportion.apportion.Dto.UserResponseDto;
-import com.apportion.apportion.Entidades.UsuarioEntity;
-import com.apportion.apportion.Repositrories.UserRepository;
-import lombok.RequiredArgsConstructor;
-import org.apache.catalina.User;
+import com.apportion.apportion.Model.Entidades.UsuarioEntity;
+import com.apportion.apportion.Service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+
 @RestController
-@RequestMapping("/User")
-@RequiredArgsConstructor
+@RequestMapping("/user")
+@AllArgsConstructor
 public class UsuarioController {
 
-    private final UserRepository repository;
-
-    public UsuarioController(UserRepository repository) {
-        this.repository = repository;
-    }
+    private final UserService userService;
 
     @GetMapping
-    public List<UsuarioEntity> listar()
-    {
-        return repository.findAll();
-    }
-
-    @PostMapping
-    public UsuarioEntity Create(@RequestBody UsuarioEntity user)
-    {
-        return repository.save(user);
+    public List<UsuarioEntity> listar() {
+        return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioEntity> BuscarPorId(@PathVariable long id)
-    {
-        return repository.findById(id)
-                .map(usuarioEntity -> ResponseEntity.ok(usuarioEntity))
+    public ResponseEntity<UsuarioEntity> findById(@PathVariable Long id) {
+        return userService.findById(id)
+                .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletar(@PathVariable long id)
-    {
-        if(!repository.existsById(id))
-        {
-            return ResponseEntity.notFound().build();
-        }
-        repository.deleteById(id);
-        return ResponseEntity.noContent().build();
+    @PostMapping
+    public UsuarioEntity create(@RequestBody UsuarioEntity user) {
+        return userService.save(user);
     }
 
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletar(@PathVariable long id) {
+        if (!userService.existsById(id)) {
+            return ResponseEntity.notFound().build();
+        }
+        userService.deletebyId(id);
+        return ResponseEntity.noContent().build();
+    }
 }

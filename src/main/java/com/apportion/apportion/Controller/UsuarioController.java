@@ -1,11 +1,14 @@
 package com.apportion.apportion.Controller;
 
-import com.apportion.apportion.Model.Entidades.UsuarioEntity;
+import com.apportion.apportion.Dto.Requests.UserRequestDto;
+import com.apportion.apportion.Dto.Responses.UserResponseDto;
 import com.apportion.apportion.Service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
 
 
@@ -18,20 +21,31 @@ public class UsuarioController {
     private final UserService userService;
 
     @GetMapping
-    public List<UsuarioEntity> listar() {
+    public List<UserResponseDto> GetAll() {
         return userService.findAll();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioEntity> findById(@PathVariable Long id) {
-        return userService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<UserResponseDto> findById(@PathVariable Long id) {
+        try {
+            UserResponseDto dto = userService.findById(id);
+
+            return ResponseEntity.ok(dto);
+
+        } catch (RuntimeException e) {
+            return ResponseEntity.notFound().build();
+        }
+
     }
 
     @PostMapping
-    public UsuarioEntity create(@RequestBody UsuarioEntity user) {
-        return userService.save(user);
+    public ResponseEntity<UserResponseDto> create(@RequestBody UserRequestDto user) {
+        UserResponseDto novoUsuario = userService.save(user);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(novoUsuario.getId())
+                .toUri();
+        return ResponseEntity.created(uri).body(novoUsuario);
     }
 
     @DeleteMapping("/{id}")

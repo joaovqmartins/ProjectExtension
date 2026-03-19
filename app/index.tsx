@@ -30,7 +30,7 @@ export default function Login() {
         <View style={styles.inner}>
          <View style={styles.logoPlaceholder}>
             <Image 
-              source={require("../assets/images/streamdeck_key__4_-removebg-preview.png")} 
+              source={require("../assets/images/logo.png")} 
               style={styles.logoImage}
               resizeMode="contain"
             />

@@ -35,7 +35,7 @@ export default function DivisionScreen() {
   const [group, setGroup] = useState<Group | null>(null);
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const [groupData, setGroupData] = useState<any>(null);
   // Form state
   const [description, setDescription] = useState("");
   const [amount, setAmount] = useState("");
@@ -45,6 +45,17 @@ export default function DivisionScreen() {
   useEffect(() => {
     loadData();
   }, [groupId]);
+
+const loadGroupDetails = async () => {
+    const savedGroups = await AsyncStorage.getItem("apportionGroups");
+    if (savedGroups) {
+      const allGroups = JSON.parse(savedGroups);
+      const currentGroup = allGroups.find((g: any) => g.id === groupId);
+      if (currentGroup) {
+        setGroupData(currentGroup);
+      }
+    }
+  };
 
   const loadData = async () => {
     try {
@@ -156,14 +167,14 @@ export default function DivisionScreen() {
           <View style={[styles.card, { flex: 1, marginRight: 8 }]}>
             <Text style={styles.cardLabel}>Total</Text>
             <View style={styles.amountContainer}>
-              <DollarSign size={18} color="#16a34a" />
+              <Text style={styles.cardLabel} >R$</Text>
               <Text style={styles.amountText}>{totalExpenses.toFixed(2)}</Text>
             </View>
           </View>
           <View style={[styles.card, { flex: 1, marginLeft: 8 }]}>
             <Text style={styles.cardLabel}>Por Pessoa</Text>
             <View style={styles.amountContainer}>
-              <DollarSign size={18} color="#2563eb" />
+              <Text style={styles.cardLabel}>R$</Text>
               <Text style={styles.amountText}>
                 {(totalExpenses / group.members.length).toFixed(2)}
               </Text>
@@ -207,7 +218,7 @@ export default function DivisionScreen() {
                   <Text style={styles.expenseSub}>Pago por {expense.paidBy}</Text>
                 </View>
                 <View style={styles.row}>
-                  <Text style={styles.expenseValue}>${expense.amount.toFixed(2)}</Text>
+                  <Text style={styles.expenseValue}>R${expense.amount.toFixed(2)}</Text>
                   <TouchableOpacity onPress={() => handleDeleteExpense(expense.id)}>
                     <Trash2 size={18} color="#ef4444" style={{ marginLeft: 10 }} />
                   </TouchableOpacity>

@@ -78,7 +78,7 @@ export default function Profile() {
           <ArrowLeft color="#fff" size={24} />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Meu Perfil</Text>
-        <TouchableOpacity style={styles.editButton}>
+        <TouchableOpacity style={styles.editButton} onPress={() => router.push("/sidebar/edit-profile")}>
           <Edit2 color="#9d5da3" size={20} />
         </TouchableOpacity>
       </View>
@@ -117,17 +117,28 @@ export default function Profile() {
           </TouchableOpacity>
         </View>
 
-        {/* Menu de Opções (Mantido) */}
-        <View style={styles.menuSection}>
-          <Text style={styles.menuLabel}>Conta</Text>
-          <TouchableOpacity style={styles.menuItem}>
-            <View style={[styles.iconBox, { backgroundColor: '#3f2641' }]}><Settings color="#9d5da3" size={22} /></View>
-            <Text style={styles.menuItemText}>Configurações</Text>
-            <ArrowLeft color="#3f3f46" size={20} style={{ transform: [{ rotate: '180deg' }] }} />
-          </TouchableOpacity>
-          {/* ... outras opções ... */}
-        </View>
+       {/* Menu de Opções */}
+<View style={styles.menuSection}>
+  <Text style={styles.menuLabel}>Conta</Text>
+  
+  {/* O onPress deve ficar no componente que envolve o ícone e o texto */}
+  <TouchableOpacity 
+    style={styles.menuItem} 
+    onPress={() => router.push("/sidebar/settings")} // Ajustei para o caminho completo
+  >
+    <View style={[styles.iconBox, { backgroundColor: '#3f2641' }]}>
+      <Settings color="#9d5da3" size={22} />
+    </View>
+    <Text style={styles.menuItemText}>Configurações</Text>
+    <ArrowLeft 
+      color="#3f3f46" 
+      size={20} 
+      style={{ transform: [{ rotate: '180deg' }] }} 
+    />
+  </TouchableOpacity>
 
+  {/* Você pode adicionar outros itens aqui seguindo o mesmo padrão */}
+</View>
         <Text style={styles.versionText}>Apportion v1.0.0</Text>
       </ScrollView>
     </SafeAreaView>
